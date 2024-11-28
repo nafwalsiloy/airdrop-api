@@ -93,7 +93,7 @@
             status.textContent = "Checking eligibility...";
             try {
                 // Replace this with your real API endpoint
-                const response = await fetch(`https://airdrop-api.vercel.app/eligibility?address=${userAddress}`);
+                const response = await fetch(`https://airdrop-api.vercel.app/api/eligibility?address=${userAddress}`);
                 const data = await response.json();
                 if (data.eligible) {
                     eligibility = true;
