@@ -22,13 +22,12 @@
 </head>
 <body>
     <h1>Airdrop Claim</h1>
-    <button id="connectButton">Connect Wallet (MetaMask or WalletConnect)</button>
+    <button id="connectButton">Connect Wallet</button>
     <button id="checkEligibilityButton" disabled>Check Eligibility</button>
     <button id="claimButton" disabled>Claim Airdrop</button>
     <p id="status"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js"></script>
     <script>
         let provider;
         let signer;
@@ -36,63 +35,55 @@
         let eligibility = false;
         let value;
         let proof;
-        
+
         const connectButton = document.getElementById('connectButton');
         const checkEligibilityButton = document.getElementById('checkEligibilityButton');
         const claimButton = document.getElementById('claimButton');
         const status = document.getElementById('status');
-        
-        // Function to detect and handle wallet connection
-        async function connectWallet() {
+
+        // Connect to Ethereum Wallet (MetaMask version 12.x.x and later)
+        connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
-                // MetaMask connection
-                provider = new ethers.Web3Provider(window.ethereum);
                 try {
+                    // Request account access
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
                     if (accounts && accounts.length > 0) {
                         userAddress = accounts[0];
+
+                        // Set up provider and signer
+                        provider = new ethers.Web3Provider(window.ethereum);
                         signer = provider.getSigner();
-                        status.textContent = `MetaMask connected: ${userAddress}`;
+                        status.textContent = `Wallet connected: ${userAddress}`;
+
+                        // Enable "Check Eligibility" button after successful connection
                         checkEligibilityButton.disabled = false;
+
+                        // Listen for account changes
+                        window.ethereum.on('accountsChanged', (accounts) => {
+                            userAddress = accounts[0];
+                            status.textContent = `Wallet changed: ${userAddress}`;
+                        });
+
+                        // Listen for network changes
+                        window.ethereum.on('chainChanged', () => {
+                            window.location.reload();
+                        });
+                    } else {
+                        status.textContent = "No accounts found. Please ensure MetaMask is unlocked.";
                     }
                 } catch (error) {
-                    console.error(error);
-                    status.textContent = "MetaMask connection failed.";
-                }
-            } else if (window.WalletConnectProvider) {
-                // WalletConnect connection
-                const walletConnectProvider = new WalletConnectProvider({
-                    infuraId: "https://mainnet.infura.io/v3/838cd6b58d214e2b9578592c0f2344a9" // You need to replace this with your Infura Project ID
-                });
-                
-                try {
-                    await walletConnectProvider.enable();
-                    provider = new ethers.Web3Provider(walletConnectProvider);
-                    signer = provider.getSigner();
-                    userAddress = await signer.getAddress();
-                    status.textContent = `WalletConnect connected: ${userAddress}`;
-                    checkEligibilityButton.disabled = false;
-
-                    // Listen for account and network changes
-                    walletConnectProvider.on("accountsChanged", (accounts) => {
-                        userAddress = accounts[0];
-                        status.textContent = `Wallet changed: ${userAddress}`;
-                    });
-
-                    walletConnectProvider.on("chainChanged", (chainId) => {
-                        status.textContent = `Network changed: ${chainId}`;
-                        window.location.reload();
-                    });
-                } catch (error) {
-                    console.error(error);
-                    status.textContent = "WalletConnect connection failed.";
+                    console.error("Error during wallet connection:", error);
+                    if (error.code === 4001) {
+                        status.textContent = "Connection request denied. Please try again.";
+                    } else {
+                        status.textContent = "Error connecting to wallet.";
+                    }
                 }
             } else {
                 status.textContent = "Please install MetaMask or another Ethereum wallet.";
             }
-        }
-
-        connectButton.addEventListener('click', connectWallet);
+        });
 
         // Check eligibility via API
         checkEligibilityButton.addEventListener('click', async () => {
@@ -101,7 +92,6 @@
                 // Replace this with your real API endpoint
                 const response = await fetch(`https://airdrop-api.vercel.app/eligibility?address=${userAddress}`);
                 const data = await response.json();
-
                 if (data.eligible) {
                     eligibility = true;
                     value = data.value;  // The value to claim
