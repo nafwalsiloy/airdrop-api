@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop Claim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Airdrop Claim</h1>
+    <button id="connectButton">Connect Wallet</button>
+    <button id="checkEligibilityButton" disabled>Check Eligibility</button>
+    <button id="claimButton" disabled>Claim Airdrop</button>
+    <p id="status"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        let provider;
+        let signer;
+        let userAddress;
+        let eligibility = false;
+        let value;
+        let proof;
+
+        const connectButton = document.getElementById('connectButton');
+        const checkEligibilityButton = document.getElementById('checkEligibilityButton');
+        const claimButton = document.getElementById('claimButton');
+        const status = document.getElementById('status');
+
+        // Connect to Ethereum Wallet
+        connectButton.addEventListener('click', async () => {
+            if (window.ethereum) {
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                userAddress = await signer.getAddress();
+                status.textContent = `Wallet connected: ${userAddress}`;
+                checkEligibilityButton.disabled = false;
+            } else {
+                status.textContent = "Please install MetaMask or another Ethereum wallet.";
+            }
+        });
+
+        // Check eligibility via API
+        checkEligibilityButton.addEventListener('click', async () => {
+            status.textContent = "Checking eligibility...";
+            try {
+                // Replace this with your real API endpoint
+                const response = await fetch(`https://airdrop-api.vercel.app/api/eligibility?address=${userAddress}`);
+                const data = await response.json();
+                if (data.eligible) {
+                    eligibility = true;
+                    value = data.value;  // The value to claim
+                    proof = data.proof;  // Proof (if needed)
+                    claimButton.disabled = false;
+                    status.textContent = `You are eligible for an airdrop of ${value} tokens!`;
+                } else {
+                    eligibility = false;
+                    status.textContent = "You are not eligible for the airdrop.";
+                }
+            } catch (error) {
+                status.textContent = "Error checking eligibility.";
+                console.error(error);
+            }
+        });
+
+        // Claim the airdrop
+        claimButton.addEventListener('click', async () => {
+            if (!eligibility) {
+                status.textContent = "You are not eligible for the airdrop.";
+                return;
+            }
+
+            status.textContent = "Claiming airdrop...";
+            try {
+                // Replace this with your real contract and claim function
+                const contractAddress = "YOUR_CONTRACT_ADDRESS";
+                const contractABI = [
+                    // Your contract ABI here
+                    "function claim(address recipient, uint256 value, bytes32[] calldata proof) external"
+                ];
+                const contract = new ethers.Contract(contractAddress, contractABI, signer);
+                const tx = await contract.claim(userAddress, value, proof);
+                await tx.wait();
+                status.textContent = "Airdrop claimed successfully!";
+            } catch (error) {
+                status.textContent = "Error claiming airdrop.";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
