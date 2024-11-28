@@ -21,11 +21,13 @@
     </style>
 </head>
 <body>
+    <center>
     <h1>Airdrop Claim</h1>
     <button id="connectButton">Connect Wallet</button>
-    <button id="checkEligibilityButton" disabled>Check Eligibility</button>
-    <button id="claimButton" disabled>Claim Airdrop</button>
+    <button id="checkEligibilityButton" style="display:none;" disabled>Check Eligibility</button>
+    <button id="claimButton" style="display:none;" disabled>Claim Airdrop</button>
     <p id="status"></p>
+    </center>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script>
@@ -60,8 +62,8 @@
                         signer = provider.getSigner();
                         status.textContent = `Wallet connected: ${userAddress}`;
 
-                        // Enable "Check Eligibility" button after successful connection
-                        checkEligibilityButton.disabled = false;
+                        // Show "Check Eligibility" button after successful connection
+                        checkEligibilityButton.style.display = "inline-block";
 
                         // Listen for account changes
                         window.ethereum.on('accountsChanged', (accounts) => {
@@ -142,7 +144,10 @@
                     eligibility = true;
                     value = data.value;  // The value to claim
                     proof = data.proof;  // Proof (if needed)
-                    claimButton.disabled = false;
+                    
+                    // Show "Claim Airdrop" button if eligible
+                    claimButton.style.display = "inline-block";
+
                     status.textContent = `You are eligible for an airdrop of ${value} tokens!`;
                 } else {
                     eligibility = false;
