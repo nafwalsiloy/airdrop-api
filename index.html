@@ -51,8 +51,8 @@
                     if (accounts && accounts.length > 0) {
                         userAddress = accounts[0];
 
-                        // Set up provider and signer
-                        provider = new ethers.Web3Provider(window.ethereum);
+                        // Set up provider and signer using the correct constructor
+                        provider = new ethers.providers.Web3Provider(window.ethereum);  // Corrected
                         signer = provider.getSigner();
                         status.textContent = `Wallet connected: ${userAddress}`;
 
