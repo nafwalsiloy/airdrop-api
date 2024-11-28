@@ -41,6 +41,10 @@
         const claimButton = document.getElementById('claimButton');
         const status = document.getElementById('status');
 
+        // Custom RPC URL for a specific chain (e.g., Polygon)
+        const CUSTOM_RPC_URL = "https://421614.rpc.thirdweb.com";  // Change this URL to the RPC URL of your desired chain
+        const TARGET_CHAIN_ID = 421614;  // Polygon Mainnet Chain ID (Change based on your desired chain)
+        
         // Connect to Ethereum Wallet (MetaMask version 12.x.x and later)
         connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
@@ -52,7 +56,7 @@
                         userAddress = accounts[0];
 
                         // Set up provider and signer using the correct constructor
-                        provider = new ethers.providers.Web3Provider(window.ethereum);  // Corrected
+                        provider = new ethers.providers.Web3Provider(window.ethereum);
                         signer = provider.getSigner();
                         status.textContent = `Wallet connected: ${userAddress}`;
 
@@ -69,6 +73,9 @@
                         window.ethereum.on('chainChanged', () => {
                             window.location.reload();
                         });
+
+                        // Switch to the target chain (custom RPC URL and chain ID)
+                        await switchNetwork();
                     } else {
                         status.textContent = "No accounts found. Please ensure MetaMask is unlocked.";
                     }
@@ -87,6 +94,41 @@
                 status.textContent = "Please install MetaMask or another Ethereum wallet.";
             }
         });
+
+        // Function to switch to a specific network using custom RPC URL
+        async function switchNetwork() {
+            try {
+                const chainId = `0x${TARGET_CHAIN_ID.toString(16)}`;  // Convert to hex format
+                // Check if the user is already on the target network
+                const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (currentChainId !== chainId) {
+                    // Switch to the target network (Polygon in this case)
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: chainId }]
+                    });
+                }
+            } catch (error) {
+                if (error.code === 4902) {
+                    // Chain not added, add it
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: `0x${TARGET_CHAIN_ID.toString(16)}`,
+                            chainName: "Arbitrum Sepolia",
+                            rpcUrls: [CUSTOM_RPC_URL],
+                            nativeCurrency: {
+                                name: "ETH",
+                                symbol: "ETH",
+                                decimals: 18
+                            },
+                            blockExplorerUrls: ["https://sepolia.arbiscan.io"]
+                        }]);
+                } else {
+                    console.error("Error switching network:", error);
+                }
+            }
+        }
 
         // Check eligibility via API
         checkEligibilityButton.addEventListener('click', async () => {
