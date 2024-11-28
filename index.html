@@ -42,9 +42,9 @@
         const status = document.getElementById('status');
 
         // Custom RPC URL for a specific chain (e.g., Polygon)
-        const CUSTOM_RPC_URL = "https://421614.rpc.thirdweb.com";  // Change this URL to the RPC URL of your desired chain
-        const TARGET_CHAIN_ID = 421614;  // Polygon Mainnet Chain ID (Change based on your desired chain)
-        
+        const CUSTOM_RPC_URL = "https://polygon-rpc.com";  // Change this URL to the RPC URL of your desired chain
+        const TARGET_CHAIN_ID = 137;  // Polygon Mainnet Chain ID (Change based on your desired chain)
+
         // Connect to Ethereum Wallet (MetaMask version 12.x.x and later)
         connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
@@ -114,16 +114,17 @@
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
                         params: [{
-                            chainId: `0x${TARGET_CHAIN_ID.toString(16)}`,
-                            chainName: "Arbitrum Sepolia",
-                            rpcUrls: [CUSTOM_RPC_URL],
+                            chainId: `0x${TARGET_CHAIN_ID.toString(16)}`, // Convert Chain ID to hex
+                            chainName: "Polygon",
+                            rpcUrls: [CUSTOM_RPC_URL],  // Custom RPC URL
                             nativeCurrency: {
-                                name: "ETH",
-                                symbol: "ETH",
+                                name: "MATIC",
+                                symbol: "MATIC",
                                 decimals: 18
                             },
-                            blockExplorerUrls: ["https://sepolia.arbiscan.io"]
-                        }]);
+                            blockExplorerUrls: ["https://polygonscan.com"]
+                        }]
+                    });
                 } else {
                     console.error("Error switching network:", error);
                 }
