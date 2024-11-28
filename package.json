@@ -1,0 +1,14 @@
+{
+  "name": "airdrop-api",
+  "version": "1.0.0",
+  "description": "Airdrop Eligibility API",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": "14.x"
+  }
+}
