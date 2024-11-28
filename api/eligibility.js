@@ -13,7 +13,8 @@ export default async function handler(req, res) {
     '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd': { eligible: false, value: 0, proof: [] }
   };
 
-  const user = users[address.toLowerCase()];
+  //const user = users[address.toLowerCase()];
+  const user = users[address];
 
   if (user) {
     return res.status(200).json(user); // Return user eligibility data
