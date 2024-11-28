@@ -45,32 +45,40 @@
         connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
                 try {
-                    // Request account access
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    // Request account access (this should trigger MetaMask popup)
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-                    // Create Web3 provider using MetaMask's window.ethereum
-                    provider = new ethers.Web3Provider(window.ethereum);
-                    signer = provider.getSigner();
-                    userAddress = await signer.getAddress();
-
-                    status.textContent = `Wallet connected: ${userAddress}`;
-
-                    // Enable the 'Check Eligibility' button
-                    checkEligibilityButton.disabled = false;
-
-                    // Listen for account change
-                    window.ethereum.on('accountsChanged', (accounts) => {
+                    // If we successfully get the account address
+                    if (accounts && accounts.length > 0) {
                         userAddress = accounts[0];
-                        status.textContent = `Wallet changed: ${userAddress}`;
-                    });
 
-                    // Listen for network change (e.g., switching between networks)
-                    window.ethereum.on('chainChanged', () => {
-                        window.location.reload();
-                    });
+                        // Create Web3 provider using MetaMask's window.ethereum
+                        provider = new ethers.Web3Provider(window.ethereum);
+                        signer = provider.getSigner();
 
+                        status.textContent = `Wallet connected: ${userAddress}`;
+
+                        // Enable the 'Check Eligibility' button
+                        checkEligibilityButton.disabled = false;
+
+                        // Listen for account change (when the user switches accounts)
+                        window.ethereum.on('accountsChanged', (accounts) => {
+                            userAddress = accounts[0];
+                            status.textContent = `Wallet changed: ${userAddress}`;
+                        });
+
+                        // Listen for network change (when the user switches networks)
+                        window.ethereum.on('chainChanged', () => {
+                            window.location.reload();
+                        });
+                    }
                 } catch (error) {
-                    status.textContent = "User denied wallet connection.";
+                    // If user denied the wallet connection or some other error
+                    if (error.code === 4001) {
+                        status.textContent = "User denied wallet connection.";
+                    } else {
+                        status.textContent = "Error connecting to wallet. Please try again.";
+                    }
                     console.error(error);
                 }
             } else {
