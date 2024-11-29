@@ -154,7 +154,7 @@
                     claimButton.style.display = "inline-block";
                     claimButton.disabled = false;  // Enable the "Claim Airdrop" button
 
-                    status.textContent = `You are eligible for an airdrop of ${valuewei} tokens!`;
+                    status.textContent = `You are eligible for an airdrop of ${value} tokens!`;
                 } else {
                     eligibility = false;
                     status.textContent = "You are not eligible for the airdrop.";
@@ -175,13 +175,13 @@
             status.textContent = "Claiming airdrop...";
             try {
                 // Replace this with your real contract address and ABI
-                const contractAddress = "YOUR_CONTRACT_ADDRESS";
+                const contractAddress = "0xbe74e347b267dcead603767c549fb490c33baab7";
                 const contractABI = [
-                    "function claim(address recipient, uint256 value, bytes32[] calldata proof) external"
+                    "function claim(address user, uint256 amount, bytes32[] calldata proof) external"
                 ];
 
                 const contract = new ethers.Contract(contractAddress, contractABI, signer);
-                const tx = await contract.claim(userAddress, value, proof);
+                const tx = await contract.claim(userAddress, valuewei, proof);
                 await tx.wait();
 
                 status.textContent = "Airdrop claimed successfully!";
