@@ -36,7 +36,7 @@
         let userAddress;
         let eligibility = false;
         let value;
-        let valuewei;
+        //let valuewei;
         let proof;
 
         const connectButton = document.getElementById('connectButton');
@@ -145,14 +145,14 @@
                 if (data.eligible) {
                     eligibility = true;
                     value = data.value;  // The eligible value to claim
-                    valuewei = value * BigInt(10 ** 18); //The value convert to wei
+                    //valuewei = value * BigInt(10 ** 18); //The value convert to wei
                     proof = data.proof;  // Proof (if needed)
                     
                     // Hide the "Check Eligibility" button and show the "Claim Airdrop" button
                     checkEligibilityButton.style.display = "none";
                     claimButton.style.display = "inline-block";
 
-                    status.textContent = `You are eligible for an airdrop of ${valuewei} tokens!`;
+                    status.textContent = `You are eligible for an airdrop of ${value} tokens!`;
                 } else {
                     eligibility = false;
                     status.textContent = "You are not eligible for the airdrop.";
