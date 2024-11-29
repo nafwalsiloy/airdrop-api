@@ -36,7 +36,6 @@
         let userAddress;
         let eligibility = false;
         let value;
-        //let valuewei;
         let proof;
 
         const connectButton = document.getElementById('connectButton');
@@ -145,7 +144,6 @@
                 if (data.eligible) {
                     eligibility = true;
                     value = data.value;  // The eligible value to claim
-                    //valuewei = value * BigInt(10 ** 18); //The value convert to wei
                     proof = data.proof;  // Proof (if needed)
                     
                     // Hide the "Check Eligibility" button and show the "Claim Airdrop" button
