@@ -65,6 +65,7 @@
                         // Hide the "Connect Wallet" button and show the "Check Eligibility" button
                         connectButton.style.display = "none";
                         checkEligibilityButton.style.display = "inline-block";
+                        checkEligibilityButton.disabled = false;  // Enable the "Check Eligibility" button
 
                         // Listen for account changes
                         window.ethereum.on('accountsChanged', (accounts) => {
@@ -145,10 +146,11 @@
                     eligibility = true;
                     value = data.value;  // The eligible value to claim
                     proof = data.proof;  // Proof (if needed)
-                    
+
                     // Hide the "Check Eligibility" button and show the "Claim Airdrop" button
                     checkEligibilityButton.style.display = "none";
                     claimButton.style.display = "inline-block";
+                    claimButton.disabled = false;  // Enable the "Claim Airdrop" button
 
                     status.textContent = `You are eligible for an airdrop of ${value} tokens!`;
                 } else {
