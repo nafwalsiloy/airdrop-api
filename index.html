@@ -68,6 +68,30 @@
             width: 100%;
         }
 
+        /* Footer Styling */
+        footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            padding: 10px 0;
+            background-color: #fff;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer a {
+            color: #1DA1F2; /* Twitter's color */
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #0088cc; /* Telegram's color */
+        }
+
         /* Additional mobile responsiveness */
         @media (max-width: 600px) {
             h1 {
@@ -87,6 +111,12 @@
         <button id="claimButton" style="display:none;" disabled>Claim Airdrop</button>
         <p id="status"></p>
     </div>
+
+    <footer>
+        <p>Follow us on</p>
+        <a href="https://x.com" target="_blank" title="Follow on X">X.com</a>
+        <a href="https://t.me/AirdropFamilyIDN" target="_blank" title="Join on Telegram">Telegram</a>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="/app.js"></script>
