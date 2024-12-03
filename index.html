@@ -6,29 +6,87 @@
     <link rel="icon" href="https://airdropfamilyidn.com/assets/img/brand/favicon.png" type="image/x-icon" />
     <title>ADFMIDN | Airdrop Claim</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
+
+        /* Header Styles */
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Button Styles */
         button {
-            padding: 10px 20px;
-            margin: 10px;
+            background-color: #FFB300; /* Saweria's yellow-orange */
+            color: white;
+            padding: 12px 30px;
             font-size: 16px;
+            border-radius: 50px;
+            border: none;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        button:hover {
+            background-color: #e0a800;
+        }
+
+        /* Status Section */
         #status {
+            font-size: 18px;
+            color: #555;
             margin-top: 20px;
+        }
+
+        /* Container Styles */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Additional mobile responsiveness */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+            .container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <center>
-    <h1>Airdrop Claim</h1>
-    <button id="connectButton">Connect Wallet</button>
-    <button id="checkEligibilityButton" style="display:none;" disabled>Check Eligibility</button>
-    <button id="claimButton" style="display:none;" disabled>Claim Airdrop</button>
-    <p id="status"></p>
-    </center>
+    <div class="container">
+        <h1>Airdrop Claim</h1>
+        <button id="connectButton">Connect Wallet</button>
+        <button id="checkEligibilityButton" style="display:none;" disabled>Check Eligibility</button>
+        <button id="claimButton" style="display:none;" disabled>Claim Airdrop</button>
+        <p id="status"></p>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="/app.js"></script>
